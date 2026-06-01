@@ -1,0 +1,285 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0f0f0f;
+  color: #ffffff;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Navbar */
+header {
+  background-color: #111111;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.navbar {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #ff4b2b;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: #ff4b2b;
+}
+
+/* Hero Section */
+.hero {
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75));
+  padding: 60px 20px;
+}
+
+.hero-content {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.tagline {
+  color: #ff4b2b;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  max-width: 700px;
+  margin-bottom: 20px;
+  line-height: 1.1;
+}
+
+.hero p {
+  max-width: 600px;
+  font-size: 1.1rem;
+  color: #dddddd;
+  margin-bottom: 28px;
+}
+
+/* Buttons */
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: 0.2s ease;
+}
+
+.primary-btn {
+  background-color: #ff4b2b;
+  color: #ffffff;
+}
+
+.primary-btn:hover {
+  background-color: #e63e20;
+}
+
+.secondary-btn {
+  border: 2px solid #ff4b2b;
+  color: #ff4b2b;
+}
+
+.secondary-btn:hover {
+  background-color: #ff4b2b;
+  color: #ffffff;
+}
+
+/* General Sections */
+section {
+  padding: 60px 20px;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 35px;
+}
+
+/* Cards */
+.card-container,
+.steps {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.card,
+.step-card {
+  background-color: #171717;
+  border: 1px solid #2a2a2a;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.card h3,
+.step-card h3 {
+  color: #ff4b2b;
+  margin-bottom: 10px;
+}
+
+.card p,
+.step-card p {
+  color: #cccccc;
+}
+
+/* Call To Action */
+.cta {
+  text-align: center;
+  background-color: #151515;
+}
+
+.cta h2 {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.cta p {
+  color: #cccccc;
+  margin-bottom: 24px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 80px 20px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 2.4rem;
+  }
+
+  .hero p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .card-container,
+  .steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+.booking-page {
+  padding: 40px 20px;
+}
+
+.booking-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 40px;
+}
+
+.booking-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.booking-form-section {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.booking-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  background: #111;
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+.booking-form button {
+  grid-column: span 2;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .booking-form {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width,
+  .booking-form button {
+    grid-column: span 1;
+  }
+}
