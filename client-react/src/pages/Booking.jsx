@@ -1,14 +1,35 @@
+import { addRequest } from "../utils/requestStorage";
+
 function Booking() {
   function handleSubmit(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    alert(
-      "Your service request has been submitted. We will contact you soon."
-    );
+  const form = event.currentTarget;
+  const formData = new FormData(form);
 
-    event.currentTarget.reset();
-  }
+  const requestData = {
+    fullName: formData.get("fullName"),
+    phone: formData.get("phone"),
+    email: formData.get("email"),
+    vehicleYear: Number(formData.get("vehicleYear")),
+    vehicleMake: formData.get("vehicleMake"),
+    vehicleModel: formData.get("vehicleModel"),
+    serviceType: formData.get("service"),
+    zipCode: formData.get("zipCode"),
+    urgency: formData.get("urgency"),
+    description: formData.get("message"),
+  };
 
+  const savedRequest = addRequest(requestData);
+
+  console.log("Saved request:", savedRequest);
+
+  alert(
+    "Your service request has been submitted. We will contact you soon."
+  );
+
+  form.reset();
+}
   return (
     <main className="booking-page">
       <section className="booking-header">
