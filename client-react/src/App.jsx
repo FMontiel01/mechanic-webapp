@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Booking from "./pages/Booking";
 import About from "./pages/About";
+import AdminRequests from "./pages/AdminRequests";
 
 import "./App.css";
 
@@ -20,6 +21,11 @@ function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/booking" element={<Booking />} />
         <Route path="/about" element={<About />} />
+
+        <Route
+          path="/admin"
+          element={<AdminRequests />}
+        />
       </Routes>
 
       <Footer />
