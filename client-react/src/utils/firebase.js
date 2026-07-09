@@ -11,7 +11,7 @@ const firebaseConfig = {
   authDomain: "mechanic-react-webapp.firebaseapp.com",
   projectId: "mechanic-react-webapp",
   storageBucket: "mechanic-react-webapp.firebasestorage.app",
-  messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID_HERE",
+  messagingSenderId: "193511106889",
   appId: "1:193511106889:web:113e3e173ce152c6255298",
 };
 
