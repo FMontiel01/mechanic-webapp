@@ -20,3 +20,6 @@ const app = initializeApp(firebaseConfig);
 
 // Connect app to Firestore database
 export const db = getFirestore(app);
+
+// Connect app to Firebase Authentication
+export const auth = getAuth(app);

@@ -2,11 +2,13 @@ import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Booking from "./pages/Booking";
 import About from "./pages/About";
+import AdminLogin from "./pages/AdminLogin";
 import AdminRequests from "./pages/AdminRequests";
 
 import "./App.css";
@@ -23,8 +25,17 @@ function App() {
         <Route path="/about" element={<About />} />
 
         <Route
+          path="/admin-login"
+          element={<AdminLogin />}
+        />
+
+        <Route
           path="/admin"
-          element={<AdminRequests />}
+          element={
+            <ProtectedRoute>
+              <AdminRequests />
+            </ProtectedRoute>
+          }
         />
       </Routes>
 

@@ -721,3 +721,85 @@ section {
     width: 100%;
   }
 }
+
+.admin-login-button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px 24px;
+
+  background-color: #ff4d24;
+  color: white;
+
+  border: none;
+  border-radius: 6px;
+
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-login-button:hover:not(:disabled) {
+  background-color: #e63f1a;
+  transform: translateY(-2px);
+}
+
+.admin-login-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.admin-login-button:disabled {
+  background-color: #777;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-logout-button {
+  padding: 12px 22px;
+  background-color: #ff4d24;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-logout-button:hover:not(:disabled) {
+  background-color: #e63f1a;
+  transform: translateY(-2px);
+}
+
+.admin-logout-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.admin-logout-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .admin-header-actions {
+    width: 100%;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-logout-button {
+    width: 100%;
+  }
+}

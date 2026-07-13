@@ -1,13 +1,35 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+
+import { auth } from "../utils/firebase";
+
 import {
   getRequests,
   updateRequestStatus,
   deleteRequest,
 } from "../utils/requestStorage";
 
+
 function AdminRequests() {
   const [requests, setRequests] = useState(() => getRequests());
   const [statusFilter, setStatusFilter] = useState("All");
+
+  const navigate = useNavigate();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  async function handleLogout() {
+  setIsLoggingOut(true);
+
+    try {
+      await signOut(auth);
+      navigate("/admin-login", { replace: true });
+    } catch (error) {
+      console.error("Logout failed:", error);
+      window.alert("Unable to log out. Please try again.");
+      setIsLoggingOut(false);
+    }
+  }
 
   const filteredRequests =
     statusFilter === "All"
@@ -110,57 +132,56 @@ function AdminRequests() {
             <h1>Service Requests</h1>
 
             <p>
-              Review customer requests, update their status, and
-              remove requests that are no longer needed.
+              Review customer requests, update their status, and remove requests
+              that are no longer needed.
             </p>
           </div>
 
-          <div className="request-total">
-            <span>{requests.length}</span>
-            <p>Total Requests</p>
+          <div className="admin-header-actions">
+            <div className="request-total">
+              <span>{requests.length}</span>
+              <p>Total Requests</p>
+            </div>
+
+            <button
+              type="button"
+              className="admin-logout-button"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+            >
+              {isLoggingOut ? "Logging Out..." : "Log Out"}
+            </button>
           </div>
         </div>
 
         <div className="admin-summary">
           <div className="summary-card">
-            <span className="summary-number">
-              {pendingCount}
-            </span>
+            <span className="summary-number">{pendingCount}</span>
             <p>Pending</p>
           </div>
 
           <div className="summary-card">
-            <span className="summary-number">
-              {inProgressCount}
-            </span>
+            <span className="summary-number">{inProgressCount}</span>
             <p>In Progress</p>
           </div>
 
           <div className="summary-card">
-            <span className="summary-number">
-              {completedCount}
-            </span>
+            <span className="summary-number">{completedCount}</span>
             <p>Completed</p>
           </div>
         </div>
 
         <div className="request-toolbar">
-          <label htmlFor="statusFilter">
-            Filter by Status
-          </label>
+          <label htmlFor="statusFilter">Filter by Status</label>
 
           <select
             id="statusFilter"
             value={statusFilter}
-            onChange={(event) =>
-              setStatusFilter(event.target.value)
-            }
+            onChange={(event) => setStatusFilter(event.target.value)}
           >
             <option value="All">All Requests</option>
             <option value="Pending">Pending</option>
-            <option value="In Progress">
-              In Progress
-            </option>
+            <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>
             <option value="Cancelled">Cancelled</option>
           </select>
@@ -171,27 +192,18 @@ function AdminRequests() {
             <h2>No service requests found</h2>
 
             <p>
-              New requests submitted through the booking form
-              will appear here.
+              New requests submitted through the booking form will appear here.
             </p>
           </div>
         ) : (
           <div className="request-list">
             {filteredRequests.map((request) => (
-              <article
-                className="request-card"
-                key={request.id}
-              >
+              <article className="request-card" key={request.id}>
                 <div className="request-card-header">
                   <div>
-                    <h2>
-                      {request.fullName || "Unknown Customer"}
-                    </h2>
+                    <h2>{request.fullName || "Unknown Customer"}</h2>
 
-                    <p>
-                      Submitted{" "}
-                      {formatSubmittedDate(request.createdAt)}
-                    </p>
+                    <p>Submitted {formatSubmittedDate(request.createdAt)}</p>
                   </div>
 
                   <span
@@ -220,11 +232,7 @@ function AdminRequests() {
 
                       <div>
                         <dt>Preferred Contact</dt>
-                        <dd>
-                          {formatValue(
-                            request.preferredContact
-                          )}
-                        </dd>
+                        <dd>{formatValue(request.preferredContact)}</dd>
                       </div>
                     </dl>
                   </div>
@@ -236,19 +244,15 @@ function AdminRequests() {
                       <div>
                         <dt>Vehicle</dt>
                         <dd>
-                          {request.vehicleYear || ""}
-                          {" "}
-                          {request.vehicleMake || ""}
-                          {" "}
+                          {request.vehicleYear || ""}{" "}
+                          {request.vehicleMake || ""}{" "}
                           {request.vehicleModel || ""}
                         </dd>
                       </div>
 
                       <div>
                         <dt>Vehicle Starts</dt>
-                        <dd>
-                          {formatValue(request.vehicleStarts)}
-                        </dd>
+                        <dd>{formatValue(request.vehicleStarts)}</dd>
                       </div>
                     </dl>
                   </div>
@@ -259,32 +263,22 @@ function AdminRequests() {
                     <dl>
                       <div>
                         <dt>Service</dt>
-                        <dd>
-                          {formatValue(request.serviceType)}
-                        </dd>
+                        <dd>{formatValue(request.serviceType)}</dd>
                       </div>
 
                       <div>
                         <dt>Urgency</dt>
-                        <dd>
-                          {formatValue(request.urgency)}
-                        </dd>
+                        <dd>{formatValue(request.urgency)}</dd>
                       </div>
 
                       <div>
                         <dt>ZIP Code</dt>
-                        <dd>
-                          {request.zipCode || "Not provided"}
-                        </dd>
+                        <dd>{request.zipCode || "Not provided"}</dd>
                       </div>
 
                       <div>
                         <dt>Preferred Date</dt>
-                        <dd>
-                          {formatPreferredDate(
-                            request.preferredDate
-                          )}
-                        </dd>
+                        <dd>{formatPreferredDate(request.preferredDate)}</dd>
                       </div>
                     </dl>
                   </div>
@@ -301,9 +295,7 @@ function AdminRequests() {
 
                 <div className="request-actions">
                   <div className="status-control">
-                    <label
-                      htmlFor={`status-${request.id}`}
-                    >
+                    <label htmlFor={`status-${request.id}`}>
                       Update Status
                     </label>
 
@@ -311,27 +303,16 @@ function AdminRequests() {
                       id={`status-${request.id}`}
                       value={request.status}
                       onChange={(event) =>
-                        handleStatusChange(
-                          request.id,
-                          event.target.value
-                        )
+                        handleStatusChange(request.id, event.target.value)
                       }
                     >
-                      <option value="Pending">
-                        Pending
-                      </option>
+                      <option value="Pending">Pending</option>
 
-                      <option value="In Progress">
-                        In Progress
-                      </option>
+                      <option value="In Progress">In Progress</option>
 
-                      <option value="Completed">
-                        Completed
-                      </option>
+                      <option value="Completed">Completed</option>
 
-                      <option value="Cancelled">
-                        Cancelled
-                      </option>
+                      <option value="Cancelled">Cancelled</option>
                     </select>
                   </div>
 
@@ -341,7 +322,7 @@ function AdminRequests() {
                     onClick={() =>
                       handleDelete(
                         request.id,
-                        request.fullName || "this customer"
+                        request.fullName || "this customer",
                       )
                     }
                   >
