@@ -1,25 +1,84 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 
-import { auth } from "../utils/firebase";
-
 import {
-  getRequests,
-  updateRequestStatus,
-  deleteRequest,
-} from "../utils/requestStorage";
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+} from "firebase/firestore";
 
+import { auth, db } from "../utils/firebase";
+
+function normalizeStatus(status) {
+  const normalizedStatus = String(status || "")
+    .trim()
+    .toLowerCase()
+    .replaceAll("-", " ");
+
+  if (normalizedStatus === "in progress") {
+    return "In Progress";
+  }
+
+  if (normalizedStatus === "completed") {
+    return "Completed";
+  }
+
+  if (normalizedStatus === "cancelled") {
+    return "Cancelled";
+  }
+
+  return "Pending";
+}
 
 function AdminRequests() {
-  const [requests, setRequests] = useState(() => getRequests());
+  const [requests, setRequests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  useEffect(() => {
+    const requestsQuery = query(
+      collection(db, "serviceRequests"),
+      orderBy("createdAt", "desc"),
+    );
+
+    const unsubscribe = onSnapshot(
+      requestsQuery,
+      (snapshot) => {
+        const loadedRequests = snapshot.docs.map((requestDocument) => {
+          const requestData = requestDocument.data();
+
+          return {
+            id: requestDocument.id,
+            ...requestData,
+            status: normalizeStatus(requestData.status),
+          };
+        });
+
+        setRequests(loadedRequests);
+        setIsLoading(false);
+        setLoadError("");
+      },
+      (error) => {
+        console.error("Unable to load requests:", error);
+        setLoadError("Unable to load service requests.");
+        setIsLoading(false);
+      },
+    );
+
+    return unsubscribe;
+  }, []);
+
   async function handleLogout() {
-  setIsLoggingOut(true);
+    setIsLoggingOut(true);
 
     try {
       await signOut(auth);
@@ -48,35 +107,45 @@ function AdminRequests() {
     (request) => request.status === "Completed"
   ).length;
 
-  function handleStatusChange(requestId, newStatus) {
-    const updatedRequests = updateRequestStatus(
-      requestId,
-      newStatus
-    );
+  async function handleStatusChange(requestId, newStatus) {
+    try {
+      const requestReference = doc(db, "serviceRequests", requestId);
 
-    setRequests(updatedRequests);
+      await updateDoc(requestReference, {
+        status: newStatus,
+      });
+    } catch (error) {
+      console.error("Unable to update request:", error);
+      window.alert("Unable to update the request status.");
+    }
   }
 
-  function handleDelete(requestId, customerName) {
+  async function handleDelete(requestId, customerName) {
     const shouldDelete = window.confirm(
-      `Are you sure you want to delete the request from ${customerName}?`
+      `Are you sure you want to delete the request from ${customerName}?`,
     );
 
     if (!shouldDelete) {
       return;
     }
 
-    const updatedRequests = deleteRequest(requestId);
-
-    setRequests(updatedRequests);
+    try {
+      await deleteDoc(doc(db, "serviceRequests", requestId));
+    } catch (error) {
+      console.error("Unable to delete request:", error);
+      window.alert("Unable to delete the service request.");
+    }
   }
 
-  function formatSubmittedDate(dateString) {
-    if (!dateString) {
+  function formatSubmittedDate(dateValue) {
+    if (!dateValue) {
       return "Not available";
     }
 
-    const date = new Date(dateString);
+    const date =
+      typeof dateValue.toDate === "function"
+        ? dateValue.toDate()
+        : new Date(dateValue);
 
     if (Number.isNaN(date.getTime())) {
       return "Not available";
@@ -187,7 +256,16 @@ function AdminRequests() {
           </select>
         </div>
 
-        {filteredRequests.length === 0 ? (
+        {isLoading ? (
+          <div className="empty-requests">
+            <h2>Loading service requests...</h2>
+          </div>
+        ) : loadError ? (
+          <div className="empty-requests">
+            <h2>Unable to load requests</h2>
+            <p>{loadError}</p>
+          </div>
+        ) : filteredRequests.length === 0 ? (
           <div className="empty-requests">
             <h2>No service requests found</h2>
 

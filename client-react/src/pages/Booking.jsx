@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { addRequest } from "../utils/requestStorage";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+
+import { db } from "../utils/firebase";
 
 function Booking() {
   const [submissionMessage, setSubmissionMessage] = useState("");
@@ -19,7 +25,7 @@ function Booking() {
     setSubmissionType(type);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
@@ -73,12 +79,18 @@ function Booking() {
       urgency: formData.get("urgency"),
       preferredDate: formData.get("preferredDate"),
       description: String(formData.get("message")).trim(),
+
+      status: "pending",
+      createdAt: serverTimestamp(),
     };
 
     try {
-      const savedRequest = addRequest(requestData);
-
-      console.log("Saved request:", savedRequest);
+      const savedRequest = await addDoc(
+        collection(db, "serviceRequests"),
+        requestData
+      );
+      console.log("Saved request ID:", savedRequest.id);
+      
 
       showMessage(
         "Your service request was submitted successfully. We will contact you soon.",
